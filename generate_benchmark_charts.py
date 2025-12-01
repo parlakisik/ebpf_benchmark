@@ -3,6 +3,8 @@
 Generate benchmark comparison charts and visualizations
 """
 
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend for headless systems
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
