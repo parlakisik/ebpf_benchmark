@@ -1,0 +1,16 @@
+[package]
+name = "ebpf-benchmark-kernel"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+aya-ebpf = "0.1"
+aya-log-ebpf = "0.1"
+
+[[bin]]
+name = "ringbuf_throughput"
+path = "src/ringbuf_throughput.rs"
+
+[lib]
+name = "ebpf_benchmark_kernel"
+path = "src/lib.rs"

@@ -1,0 +1,238 @@
+# eBPF Benchmark Configuration
+# Define all benchmarks to run
+
+benchmarks:
+  - id: "ringbuf_throughput_kprobe"
+    name: "Ring Buffer Throughput - kprobe"
+    description: "Measure throughput using ring buffer with kprobe on syscalls"
+    program_type: "kprobe"
+    data_mechanism: "ring_buffer"
+    event_source: "do_sys_openat2"
+    duration_seconds: 60
+    load_type: "syscall_flood"
+    languages:
+      - "c"
+      - "python"
+      - "golang"
+      - "rust"
+    metrics:
+      - throughput
+      - latency
+      - cpu_usage
+      - memory_usage
+
+  - id: "ringbuf_throughput_tracepoint"
+    name: "Ring Buffer Throughput - tracepoint"
+    description: "Measure throughput using ring buffer with tracepoint"
+    program_type: "tracepoint"
+    data_mechanism: "ring_buffer"
+    event_source: "syscalls:sys_enter_openat"
+    duration_seconds: 60
+    load_type: "syscall_flood"
+    languages:
+      - "c"
+      - "python"
+      - "golang"
+      - "rust"
+    metrics:
+      - throughput
+      - latency
+      - cpu_usage
+
+  - id: "perfbuf_throughput"
+    name: "Perf Buffer Throughput"
+    description: "Measure throughput using per-CPU perf buffers (legacy)"
+    program_type: "tracepoint"
+    data_mechanism: "perf_buffer"
+    event_source: "syscalls:sys_enter_read"
+    duration_seconds: 60
+    load_type: "syscall_flood"
+    languages:
+      - "c"
+      - "python"
+      - "golang"
+    metrics:
+      - throughput
+      - cpu_usage
+
+  - id: "ringbuf_latency"
+    name: "Ring Buffer Latency"
+    description: "Measure end-to-end latency (kernel event to userspace)"
+    program_type: "kprobe"
+    data_mechanism: "ring_buffer"
+    event_source: "do_sys_openat2"
+    duration_seconds: 30
+    load_type: "syscall_flood"
+    languages:
+      - "c"
+      - "python"
+      - "rust"
+    metrics:
+      - latency_percentiles
+      - latency_distribution
+
+  - id: "map_hash_lookup"
+    name: "Hash Map Lookup Latency"
+    description: "Measure hash map lookup operation latency"
+    program_type: "tracepoint"
+    data_mechanism: "hash_map"
+    event_source: "syscalls:sys_enter_openat"
+    duration_seconds: 30
+    load_type: "syscall_flood"
+    languages:
+      - "c"
+      - "python"
+      - "golang"
+      - "rust"
+    metrics:
+      - latency_percentiles
+      - operation_latency
+
+  - id: "map_array_lookup"
+    name: "Array Map Lookup Latency"
+    description: "Measure array map lookup operation latency"
+    program_type: "tracepoint"
+    data_mechanism: "array_map"
+    event_source: "syscalls:sys_enter_read"
+    duration_seconds: 30
+    load_type: "syscall_flood"
+    languages:
+      - "c"
+      - "python"
+      - "golang"
+      - "rust"
+    metrics:
+      - latency_percentiles
+      - operation_latency
+
+  - id: "percpu_array_scaling"
+    name: "Per-CPU Array Scaling"
+    description: "Measure per-CPU array performance on multiple cores"
+    program_type: "tracepoint"
+    data_mechanism: "percpu_array"
+    event_source: "syscalls:sys_enter_write"
+    duration_seconds: 30
+    load_type: "multi_cpu_flood"
+    languages:
+      - "c"
+      - "python"
+      - "golang"
+      - "rust"
+    metrics:
+      - throughput
+      - scaling_efficiency
+
+  - id: "kprobe_overhead"
+    name: "Kprobe Overhead Measurement"
+    description: "Measure CPU overhead of kprobe attachment"
+    program_type: "kprobe"
+    data_mechanism: "array_map"
+    event_source: "do_sys_openat2"
+    duration_seconds: 30
+    load_type: "syscall_flood"
+    baseline: true  # Measure with and without kprobe
+    languages:
+      - "c"
+      - "python"
+    metrics:
+      - cpu_overhead_percent
+      - latency
+
+  - id: "tracepoint_overhead"
+    name: "Tracepoint Overhead Measurement"
+    description: "Measure CPU overhead of tracepoint"
+    program_type: "tracepoint"
+    data_mechanism: "array_map"
+    event_source: "syscalls:sys_enter_openat"
+    duration_seconds: 30
+    load_type: "syscall_flood"
+    baseline: true
+    languages:
+      - "c"
+      - "python"
+    metrics:
+      - cpu_overhead_percent
+
+  - id: "xdp_packet_processing"
+    name: "XDP Packet Processing Throughput"
+    description: "Measure XDP packet processing throughput"
+    program_type: "xdp"
+    data_mechanism: "ring_buffer"
+    event_source: "eth0"
+    duration_seconds: 30
+    load_type: "packet_flood"
+    languages:
+      - "c"
+      - "rust"
+    metrics:
+      - throughput
+      - latency
+      - cpu_usage
+    requires:
+      - root_privilege
+      - test_network
+
+  - id: "stack_trace_collection"
+    name: "Stack Trace Collection Overhead"
+    description: "Measure overhead of kernel stack trace collection"
+    program_type: "perf_event"
+    data_mechanism: "stack_trace_map"
+    event_source: "cycles"
+    duration_seconds: 30
+    load_type: "cpu_bound"
+    languages:
+      - "c"
+      - "rust"
+    metrics:
+      - cpu_overhead_percent
+      - stack_collection_rate
+
+  - id: "memory_usage_analysis"
+    name: "Memory Usage Analysis"
+    description: "Analyze kernel memory footprint of programs"
+    program_type: "all"
+    data_mechanism: "all"
+    duration_seconds: 60
+    languages:
+      - "c"
+      - "python"
+      - "golang"
+      - "rust"
+    metrics:
+      - rss_memory
+      - vsz_memory
+      - page_faults
+
+# Global configuration
+global:
+  output_dir: "results"
+  result_format: "json"
+  enable_profiling: true
+  enable_perf_stat: true
+  enable_vmstat: true
+  cpu_affinity: false
+  max_retries: 3
+  warmup_duration: 5  # Seconds to warm up before measurement
+
+# Load generator configurations
+load_generators:
+  syscall_flood:
+    description: "Flood system with syscalls"
+    command: "stress-ng --syscall 0 --timeout {duration}s"
+    threads_per_core: 2
+
+  multi_cpu_flood:
+    description: "Multi-CPU syscall flood"
+    command: "stress-ng --syscall 0 --workers 0 --timeout {duration}s"
+    threads_per_core: 0  # All cores
+
+  cpu_bound:
+    description: "CPU-bound workload"
+    command: "stress-ng --cpu 0 --timeout {duration}s"
+    threads_per_core: 1
+
+  packet_flood:
+    description: "Network packet flood"
+    command: "pktgen-scripts/pktgen_burst.sh {interface} {duration}"
+    requires_root: true
+    requires_network: true

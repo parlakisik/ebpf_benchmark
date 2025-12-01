@@ -1,0 +1,14 @@
+{
+  "Name": "Ring Buffer Throughput",
+  "Language": "Go",
+  "ProgramType": "tracepoint",
+  "DataMechanism": "ring_buffer",
+  "Duration": 5.000804291,
+  "EventCount": 647790,
+  "Throughput": 129537.1628851452,
+  "CPUUsage": 0,
+  "MemoryUsage": 240249384,
+  "StartTime": "2025-11-24T20:19:24.653926-08:00",
+  "EndTime": "2025-11-24T20:19:29.654762-08:00",
+  "Errors": []
+}

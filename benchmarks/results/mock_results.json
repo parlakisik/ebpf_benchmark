@@ -1,0 +1,71 @@
+{
+  "timestamp": "2025-11-24T20:20:00Z",
+  "benchmark_info": {
+    "program_type": "tracepoint",
+    "data_mechanism": "ring_buffer",
+    "event_source": "syscalls:sys_enter_openat",
+    "duration": 10,
+    "load_generator": "syscall_flood"
+  },
+  "results": {
+    "C": {
+      "Language": "C",
+      "Name": "Ring Buffer Throughput",
+      "ProgramType": "tracepoint",
+      "DataMechanism": "ring_buffer",
+      "Duration": 10.002,
+      "EventCount": 2456789,
+      "Throughput": 245600.0,
+      "CPUUsage": 3.2,
+      "MemoryUsage": 524288,
+      "Status": "success",
+      "Note": "Production eBPF implementation"
+    },
+    "Python": {
+      "Language": "Python",
+      "Name": "Ring Buffer Throughput",
+      "ProgramType": "tracepoint",
+      "DataMechanism": "ring_buffer",
+      "Duration": 10.005,
+      "EventCount": 1567890,
+      "Throughput": 156700.0,
+      "CPUUsage": 8.1,
+      "MemoryUsage": 2097152,
+      "Status": "success",
+      "Note": "BCC with dynamic compilation"
+    },
+    "Go": {
+      "Language": "Go",
+      "Name": "Ring Buffer Throughput",
+      "ProgramType": "tracepoint",
+      "DataMechanism": "ring_buffer",
+      "Duration": 5.000804291,
+      "EventCount": 647790,
+      "Throughput": 129537.1628851452,
+      "CPUUsage": 0.0,
+      "MemoryUsage": 240249384,
+      "Status": "success",
+      "Note": "Simulated ring buffer (no kernel eBPF)"
+    },
+    "Rust": {
+      "Language": "Rust",
+      "Name": "Ring Buffer Throughput",
+      "ProgramType": "tracepoint",
+      "DataMechanism": "ring_buffer",
+      "Duration": 10.001,
+      "EventCount": 2896543,
+      "Throughput": 289600.0,
+      "CPUUsage": 2.7,
+      "MemoryUsage": 1048576,
+      "Status": "success",
+      "Note": "Aya with safe eBPF"
+    }
+  },
+  "summary": {
+    "total_languages": 4,
+    "best_throughput_language": "Rust",
+    "best_throughput": 289600.0,
+    "average_throughput": 205362.0,
+    "performance_spread": "1.2x (Rust vs Go)"
+  }
+}
